@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #main {
+      width: 200px;
+      height: 200px;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      line-height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="main"></div>
+</body>
+<script>
+  //这个是常规的debounce
+  //并且解决了在调用函数moseMove中this指向window，没有指向自身及event为undefined问题
+  let main = document.getElementById('main');
+  let count = 0;
+  function mouseMove (e) {
+    console.log(e,'e----')
+    console.log(this,'this');
+    main.innerHTML = count++;
+  }
+  // function debounce (fn,wait) {
+  //   let timer;
+  //   return function () {
+  //     let context = this;
+  //     let args = arguments;
+  //     clearTimeout(timer);
+  //     timer = setTimeout(function () {
+  //       // fn();
+  //       fn.apply(context,args);
+  //     },wait)
+  //   }
+  // }
+  // main.onmousemove = debounce(mouseMove,1000);
+
+  //接下来做一个延伸的需求，即不想再n秒之后执行，而是立即执行
+  function debounce (fn,wait,isImmediate) {
+    let timer;
+    return function () {
+      let context = this;
+      let args = arguments;
+      clearTimeout(timer);
+      if (isImmediate) {
+          // 如果已经执行过，不再执行
+          var callNow = !timer;
+          timer = setTimeout(function(){
+            timer = null;
+          }, wait)
+          if (callNow) fn.apply(context, args)
+      }else {
+        timer = setTimeout(function () {
+          fn.apply(context,args);
+        },wait)
+      }
+    }
+  }
+  main.onmousemove = debounce(mouseMove,2000,true);
+</script>
+</html>
