@@ -20,47 +20,49 @@
   <div id="main"></div>
 </body>
 <script>
-  /**
-   * 截流是一个类似与防抖的操作
-   * 但是截流要求，某一个事件在一定的事件内只发生一次
-   * 实现截流的方式目前有1，定时器；2，时间戳
-   * */
-
-  /**
-   * 时间戳方式，在事件执行时判断当前的时间-之前的时间（最一开始设置为0），
-   * 如果大于要求的时间则执行，然后更新时间戳为当前时间戳
-   * 如果小于就不执行
-   * */
-  let throttle = function (fn, wait) {
+  
+  let throttle = function (fn,wait,options) {
     let previous = 0;
-    let timer = +new Date();
+    let timeNow,context,args,result;
+    if(!options) options = {};
     return function () {
-      let context = this;
-      let args = arguments;
-      if(now - previous > wait) {
-        fn.apply(context,args);
-        previous = now;
+      context = this;
+      args = arguments;
+      timeNow = + new Date();
+      if(timeNow - previous > wait) {
+        result = fn.apply(context,args);
+        previous = timeNow;
       }
     }
+    return result;
   }
-
+  let throttle = function (fn,wait,options) {
+    let previous = 0;
+    let timeNow,context,args,result;
+    if(!options) options = {};
+    return function () {
+      context = this;
+      args = arguments;
+      timeNow = + new Date();
+      if(timeNow - previous > wait) {
+        result = fn.apply(context,args);
+        previous = timeNow;
+      }
+    }
+    return result;
+  }
+  let count = 0;
+  let main = document.getElementById('main');
+  function getUserAction () {
+    main.innerHTML = count++;
+  }
+  main.onmousemove = throttle(getUserAction, 3000);
   /**
-   * 使用定时器的方式
-   * 当事件触发的时候，我们设置一个定时器，再次触发事件的时候，定时器存在，就不执行，
-   * 直到设置的时间后清空定时器
-  */
-  let throttle = function (fn,wait) {
-    let timer;
-    return function () {
-      let context = this;
-      let args = arguments;
-      if(!timer) {
-        timer = setTimeout(()=>{
-          timer = null;
-          fn.apply(context,args);
-        },wait)
-      }
-    }
-  }
+   * 从代码中我们可以看出，第一个时间戳的版本有一个问题就是，
+   * 如果在停止执行之后是不能再触发一次事件的。第二个版本的问题就是不是立即执行，
+   * 而是会在触发一定的时间之后执行，停止触发后还有再执行一次事件。
+   * 那我们有的时候需要立即执行，有的时候需要停止触发之后不执行应该改进一下代码，
+   * 还需要取消功能，所以接下来写一个进阶的版本解决一下这两个问题。
+   */
 </script>
 </html>

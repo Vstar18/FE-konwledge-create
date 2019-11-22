@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  /**
+ * @param {number} x
+ * @return {boolean}
+ */
+var isPalindrome = function(x) {
+    let isNegative,arr,middle,res;
+    //判断正负
+    x < 0 ? isNegative = true : isNegative = false;
+    if(isNegative) {
+        return res = false;
+    };
+    arr = String(x).split('');
+    //遍历对比,
+    arr.length%2 == 0 ? middle = arr.length / 2 : middle = Math.ceil(arr.length / 2);
+    for(let i = 0; i < middle; i++) {
+        if(arr[i] !== arr[arr.length - i - 1]) {
+            return res = false;;
+        }else {
+            res = true
+        }
+      
+    }
+    return res;
+};
+console.log(isPalindrome(-121));
+</script>
+</html>
